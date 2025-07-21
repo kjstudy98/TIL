@@ -71,3 +71,43 @@ e.g.) app/(auth)/register/page.tsx
 
 フォルダ名の先頭に\_をつけると URL として後悔しない
 共通コンポーネントだったりユーティリティ関数などにつけたりする
+
+## ClientBoundary
+
+`use client`をつけるとその配下のコンポーネントは自動的に RCC となる
+
+## リンクの使い分け
+
+基本的には`Link`コンポーネントを使用する。
+イベントを組み合わせるなら RCC とする必要があるので`useRouter`を使用する。
+※`Link`は`next/router`ではなく`next/navigation`からインポートする
+※<a>タグは使わない
+
+## レンダリング
+
+### CSR
+
+クライアント側でレンダリング
+フォームやリアルタイム更新の箇所に使用
+
+### SSR
+
+サーバ側でレンダリング
+`export const dynamic = "force-dynamic";`
+->SSR を強制する
+
+`fetch(URL, {cache: "no-store"})`
+ユーザ固有の部分やパーソナライズされたコンテンツなど（毎回情報取得が必要なので）
+
+### SSG
+
+Static Site Generation（静的サイト生成。ビルド時に生成し更新しない）
+`fetch(URL, {cache: "force-cache"})`
+SEO 対策が必要な箇所や高速な初期表示が必要な箇所
+
+### ISR
+
+Incremental Static Regeneration（特定の期間やタイミングで更新）
+※ISR は SSR と SSG の中間のような立ち位置
+`fetch(URL, {cache: next: {revalidate: 10}})`
+SEO 対策が必要な箇所や高速な初期表示が必要な箇所
